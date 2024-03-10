@@ -1,17 +1,11 @@
-﻿using Fetch = OpenQA.Selenium.DevTools.V96.Fetch;
+﻿using Fetch = OpenQA.Selenium.DevTools.V122.Fetch;
 
 namespace Metalhead.SeleniumCDT.CaptureHttpResponse
 {
-    public class Response
+    public class Response(Fetch.RequestPausedEventArgs requestPausedEventArgs, Fetch.GetResponseBodyCommandResponse getResponseBodyCommandResponse)
     {
-        public Response(Fetch.RequestPausedEventArgs requestPausedEventArgs, Fetch.GetResponseBodyCommandResponse getResponseBodyCommandResponse)
-        {
-            RequestPausedEventArgs = requestPausedEventArgs;
-            GetResponseBodyCommandResponse = getResponseBodyCommandResponse;
-        }
-
-        public Fetch.RequestPausedEventArgs? RequestPausedEventArgs { get; set; }
-        public Fetch.GetResponseBodyCommandResponse? GetResponseBodyCommandResponse { get; set; }
+        public Fetch.RequestPausedEventArgs? RequestPausedEventArgs { get; set; } = requestPausedEventArgs;
+        public Fetch.GetResponseBodyCommandResponse? GetResponseBodyCommandResponse { get; set; } = getResponseBodyCommandResponse;
 
         public override string ToString()
         {
@@ -25,7 +19,7 @@ namespace Metalhead.SeleniumCDT.CaptureHttpResponse
                 return body;
             }
 
-            return String.Empty;
+            return string.Empty;
         }
     }
 }
