@@ -40,7 +40,7 @@ public class DriverOptionsValidation(IConfiguration config) : IValidateOptions<D
 
         if (validationResults.Count > 0)
         {
-            var failures = validationResults.Where(v => !string.IsNullOrWhiteSpace(v.ErrorMessage)).Select(v => $"{v.ErrorMessage}");
+            var failures = validationResults.Where(v => v.ErrorMessage is not null).Select(v => v.ErrorMessage!);
             return ValidateOptionsResult.Fail(failures);
         }
 
