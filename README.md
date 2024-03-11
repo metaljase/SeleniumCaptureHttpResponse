@@ -21,5 +21,5 @@ Testing a web page for bugs or as part of scraping a web page where capturing HT
 5. Open the `appsettings.json` file and edit the paths to match the location of Chrome and ChromeDriver on your PC.
 6. Build the solution and run!
 
-This should open Chrome and automatically visit [my example web page](https://metaljase.github.io/SeleniumCaptureHttpResponse.html).  The JavaScript in that web page makes an API call, returning [users](https://jsonplaceholder.typicode.com/users/) data as JSON in the HTTP response.
-The code in `Program.cs` captures the HTTP response, stores the JSON from the message body, then outputs the JSON in the console window.  In a real use case, you'll probably do something more exciting with the HTTP response!
+This should open Chrome and automatically visit [my example web page](https://metaljase.github.io/SeleniumCaptureHttpResponse.html).  The JavaScript in that web page makes two API calls, returning [users](https://jsonplaceholder.typicode.com/users/) and [albums](https://jsonplaceholder.typicode.com/albums/) data as JSON in the HTTP responses.
+The code in `Program.cs` captures the HTTP responses, stores the JSON from the message body, then outputs the JSON in the console window.  In a real use case, you'll probably do something more exciting with the HTTP response!
