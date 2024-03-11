@@ -12,11 +12,7 @@ public class DriverOptionsValidation(IConfiguration config) : IValidateOptions<D
     {
         List<ValidationResult> validationResults = [];
 
-        if (string.IsNullOrWhiteSpace(options.WebDriverPath))
-        {
-            validationResults.Add(new ValidationResult($"{nameof(options.WebDriverPath)} path app settings cannot be null or empty."));
-        }
-        else
+        if (!string.IsNullOrWhiteSpace(options.WebDriverPath))
         {
             var webDriverPath = Environment.ExpandEnvironmentVariables(options.WebDriverPath);
             if (webDriverPath.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
@@ -29,13 +25,9 @@ public class DriverOptionsValidation(IConfiguration config) : IValidateOptions<D
             }
         }
 
-        if (string.IsNullOrWhiteSpace(options.BrowserExecutableFullPath))
+        if (!string.IsNullOrWhiteSpace(options.BrowserExecutableFullPath))
         {
-            validationResults.Add(new ValidationResult($"{nameof(options.BrowserExecutableFullPath)} path in app settings cannot be null or empty."));
-        }
-        else
-        {
-            var browserExecutableFullPath = Environment.ExpandEnvironmentVariables(options.BrowserExecutableFullPath);            
+            var browserExecutableFullPath = Environment.ExpandEnvironmentVariables(options.BrowserExecutableFullPath);
             if (browserExecutableFullPath.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
             {
                 validationResults.Add(new ValidationResult($"{nameof(options.BrowserExecutableFullPath)} path in app settings ('{options.BrowserExecutableFullPath}') contains invalid characters."));

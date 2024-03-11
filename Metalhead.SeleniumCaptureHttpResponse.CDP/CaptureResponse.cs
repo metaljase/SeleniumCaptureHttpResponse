@@ -85,8 +85,11 @@ public class CaptureResponse(DriverOptions driverSettings)
         return responseData;
     }
 
-    private static IWebDriver CreateWebDriver(string browserExecutableFullPath, string webDriverPath)
+    private static IWebDriver CreateWebDriver(string? browserExecutableFullPath, string? webDriverPath)
     {
+        webDriverPath = string.IsNullOrWhiteSpace(webDriverPath) ? null : webDriverPath;
+        browserExecutableFullPath = string.IsNullOrWhiteSpace(browserExecutableFullPath) ? null : browserExecutableFullPath;
+
         var service = ChromeDriverService.CreateDefaultService(webDriverPath);
         service.EnableVerboseLogging = false;
 

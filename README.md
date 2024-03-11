@@ -18,7 +18,7 @@ Testing a web page for bugs or as part of scraping a web page where capturing HT
 2. Download the version of ChromeDriver that matches your version of Chrome. If don't need the [latest version of ChromeDriver](https://googlechromelabs.github.io/chrome-for-testing/), then [older versions](https://chromedriver.chromium.org/downloads) are available. Note: 32-bit version works with 64-bit Chrome.
 3. Clone the SeleniumCaptureHttpResponse repository.
 4. Open the .NET solution in Visual Studio 2022 (or a compatible alternative).
-5. Open the `appsettings.json` file and edit the paths to match the location of Chrome and ChromeDriver on your PC.
+5. Open the `appsettings.json` file and edit the paths to match the location of Chrome and ChromeDriver on your PC.  Note: If you set these paths to `null`, then the code will use the default locations for Chrome and ChromeDriver.
 6. Build the solution and run!
 
 This should open Chrome and automatically visit [my example web page](https://metaljase.github.io/SeleniumCaptureHttpResponse.html).  The JavaScript in that web page makes two API calls, returning [users](https://jsonplaceholder.typicode.com/users/) and [albums](https://jsonplaceholder.typicode.com/albums/) data as JSON in the HTTP responses.
