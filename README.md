@@ -1,8 +1,8 @@
 # What's SeleniumCaptureHttpResponse?
-SeleniumCaptureHttpResponse is an example of how to capture an HTTP response using Selenium WebDriver, ChromeDriver, Chrome DevTools Protocol (CDP), and C# (.NET 8). It is not a standalone application, it's a working example of how you can capture HTTP responses (e.g. JSON from API calls) on web pages, inc. 3rd party websites.  Therefore, you'll need software to compile the code, e.g. Visual Studio 2022.
+SeleniumCaptureHttpResponse contains two C# .NET 8 console apps that demonstrate how to capture a HTTP responses using Selenium WebDriver, ChromeDriver, Chrome DevTools Protocol (CDP), and WebDriver BiDi. It is not a standalone application, it's a working example of how you can capture HTTP responses (e.g. JSON from API calls) on web pages, inc. 3rd party websites.  Therefore, you'll need software to compile the code, e.g. Visual Studio 2022.
 
 ## What's Selenium WebDriver?
-[Selenium](https://www.selenium.dev) WebDriver controls compatible web browsers (inc. Firefox, Chrome, Edge, Internet Explorer) natively, as a real user would.
+[Selenium](https://www.selenium.dev) WebDriver controls compatible web browsers (inc. Firefox, Chrome, Edge, Internet Explorer) natively, as a real user would.  [Selenium .NET API documentation](https://www.selenium.dev/selenium/docs/api/dotnet/index.html) can be found on their website.
 
 ## What's ChromeDriver?
 [ChromeDriver](https://sites.google.com/chromium.org/driver/) is an executable that Selenium WebDriver uses to control Chrome.
@@ -10,8 +10,15 @@ SeleniumCaptureHttpResponse is an example of how to capture an HTTP response usi
 ## What's Chrome DevTools Protocol?
 [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) (CDP) allows for tools to instrument, inspect, debug, and profile, Chromium, Chrome, and other Blink-based browsers.  SeleniumCaptureHttpResponse uses CDP to capture HTTP responses.
 
+## What's WebDriver BiDi?
+[WebDriver BiDi](https://w3c.github.io/webdriver-bidi/) extends WebDriver by introducing bidirectional communication. In place of the strict command/response format of WebDriver, this permits events to stream from web browsers to the controlling software, better matching the evented nature of the browser DOM.  SeleniumCaptureHttpResponse uses WebDriver BiDi to capture HTTP responses.
+
 ## Where could this be useful?
 Testing a web page for bugs or as part of scraping a web page where capturing HTTP traffic is desired.
+
+## What's the difference between the two console apps?
+`Metalhead.SeleniumCaptureHttpResponse.BiDi` uses WebDriver BiDi to capture HTTP responses.
+`Metalhead.SeleniumCaptureHttpResponse.CDP` uses Chrome DevTools Protocol to capture HTTP responses.
 
 ## Setup instructions
 1. Install the Chrome web browser.
@@ -22,4 +29,4 @@ Testing a web page for bugs or as part of scraping a web page where capturing HT
 6. Build the solution and run!
 
 This should open Chrome and automatically visit [my example web page](https://metaljase.github.io/SeleniumCaptureHttpResponse.html).  The JavaScript in that web page makes two API calls, returning [users](https://jsonplaceholder.typicode.com/users/) and [albums](https://jsonplaceholder.typicode.com/albums/) data as JSON in the HTTP responses.
-The code in `Program.cs` captures the HTTP responses, stores the JSON from the message body, then outputs the JSON in the console window.  In a real use case, you'll probably do something more exciting with the HTTP response!
+The code in `CaptureResponse.cs` captures the HTTP responses, stores the JSON from the message body, then outputs the JSON in the console window.  In a real use case, you'll probably do something more exciting with the HTTP response!
