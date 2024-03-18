@@ -17,11 +17,11 @@ public class DriverOptionsValidation(IConfiguration config) : IValidateOptions<D
             var webDriverPath = Environment.ExpandEnvironmentVariables(options.WebDriverPath);
             if (webDriverPath.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
             {
-                validationResults.Add(new ValidationResult($"{nameof(options.WebDriverPath)} path in app settings ('{options.WebDriverPath}') contains invalid characters."));
+                validationResults.Add(new ValidationResult($"{nameof(DriverOptions.WebDriverPath)} path in app settings ('{options.WebDriverPath}') contains invalid characters."));
             }
             else if (!Path.Exists(webDriverPath))
             {
-                validationResults.Add(new ValidationResult($"{nameof(options.WebDriverPath)} full path to Chrome driver executable in app settings ('{options.WebDriverPath}') does not exist."));
+                validationResults.Add(new ValidationResult($"{nameof(DriverOptions.WebDriverPath)} full path to Chrome driver executable in app settings ('{options.WebDriverPath}') does not exist."));
             }
         }
 
@@ -30,11 +30,11 @@ public class DriverOptionsValidation(IConfiguration config) : IValidateOptions<D
             var browserExecutableFullPath = Environment.ExpandEnvironmentVariables(options.BrowserExecutableFullPath);
             if (browserExecutableFullPath.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
             {
-                validationResults.Add(new ValidationResult($"{nameof(options.BrowserExecutableFullPath)} path in app settings ('{options.BrowserExecutableFullPath}') contains invalid characters."));
+                validationResults.Add(new ValidationResult($"{nameof(DriverOptions.BrowserExecutableFullPath)} path in app settings ('{options.BrowserExecutableFullPath}') contains invalid characters."));
             }
             else if (!File.Exists(browserExecutableFullPath))
             {
-                validationResults.Add(new ValidationResult($"{nameof(options.BrowserExecutableFullPath)} path in app settings ('{options.BrowserExecutableFullPath}') does not exist."));
+                validationResults.Add(new ValidationResult($"{nameof(DriverOptions.BrowserExecutableFullPath)} path in app settings ('{options.BrowserExecutableFullPath}') does not exist."));
             }
         }
 
