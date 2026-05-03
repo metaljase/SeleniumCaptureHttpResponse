@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 
-namespace Metalhead.SeleniumCaptureHttpResponse.BiDi;
+namespace Metalhead.SeleniumCaptureHttpResponse.Selenium4;
 
 public class DriverOptionsValidation(IConfiguration config) : IValidateOptions<DriverOptions>
 {

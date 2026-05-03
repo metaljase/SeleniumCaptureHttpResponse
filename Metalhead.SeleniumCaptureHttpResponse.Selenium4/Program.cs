@@ -2,8 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-
-using Metalhead.SeleniumCaptureHttpResponse.BiDi;
+using Metalhead.SeleniumCaptureHttpResponse.Selenium4;
 
 var builder = Host.CreateApplicationBuilder();
 
