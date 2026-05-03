@@ -1,4 +1,4 @@
-﻿namespace Metalhead.SeleniumCaptureHttpResponse.BiDi;
+﻿namespace Metalhead.SeleniumCaptureHttpResponse.Selenium4;
 
 public class DriverOptions
 {

@@ -2,7 +2,7 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
-namespace Metalhead.SeleniumCaptureHttpResponse.BiDi;
+namespace Metalhead.SeleniumCaptureHttpResponse.Selenium4;
 
 public class CaptureResponse(DriverOptions driverSettings)
 {
