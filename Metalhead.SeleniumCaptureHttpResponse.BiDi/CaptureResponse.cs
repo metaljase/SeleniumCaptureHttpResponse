@@ -1,6 +1,6 @@
-﻿using OpenQA.Selenium;
+﻿using System.Collections.Concurrent;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using System.Collections.Concurrent;
 
 namespace Metalhead.SeleniumCaptureHttpResponse.BiDi;
 
@@ -8,46 +8,58 @@ public class CaptureResponse(DriverOptions driverSettings)
 {
     public async Task<ConcurrentBag<ResponseData>> GetResponseData(string url, List<string> captureUrls, TimeSpan timeout)
     {
-        EventWaitHandle[] _eventWaitHandles = new EventWaitHandle[captureUrls.Count];
-        Dictionary<string, EventWaitHandle> _eventWaitHandleLookup = [];
+        EventWaitHandle[] eventWaitHandles = new EventWaitHandle[captureUrls.Count];
+        Dictionary<string, EventWaitHandle> eventWaitHandleLookup = [];
         ConcurrentBag<ResponseData> responseData = [];
 
         for (int i = 0; i < captureUrls.Count; i++)
         {
-            _eventWaitHandles[i] = new AutoResetEvent(false);
-            _eventWaitHandleLookup.Add(captureUrls[i], _eventWaitHandles[i]);
+            eventWaitHandles[i] = new AutoResetEvent(false);
+            eventWaitHandleLookup.Add(captureUrls[i], eventWaitHandles[i]);
             responseData.Add(new ResponseData(captureUrls[i]));
         }
 
         using var webDriver = CreateWebDriver(driverSettings.BrowserExecutableFullPath, driverSettings.WebDriverPath);
         INetwork networkInterceptor = webDriver.Manage().Network;
+        bool monitoringStarted = false;
 
-        foreach (var captureUrl in _eventWaitHandleLookup.Keys)
+        try
         {
-            networkInterceptor.AddResponseHandler(new NetworkResponseHandler
+            foreach (var captureUrl in eventWaitHandleLookup.Keys)
             {
-                ResponseMatcher = response => response.Url.Equals(captureUrl, StringComparison.OrdinalIgnoreCase),
-                ResponseTransformer = response =>
+                networkInterceptor.AddResponseHandler(new NetworkResponseHandler
                 {
-                    var data = responseData.First(r => r.Url.Equals(response.Url, StringComparison.OrdinalIgnoreCase));
-                    data.CaptureSuccess = true;
-                    data.Body = response.Body; // Capture the HTTP response body.
-                    
-                    _eventWaitHandleLookup[response.Url].Set(); // Signal this HTTP response has been captured.
-                    return response;
-                }
-            });
+                    ResponseMatcher = response => response.Url?.Equals(captureUrl, StringComparison.OrdinalIgnoreCase) ?? false,
+                    ResponseTransformer = response =>
+                    {
+                        if (response.Url is not null)
+                        {
+                            var data = responseData.First(r => r.Url.Equals(response.Url, StringComparison.OrdinalIgnoreCase));
+                            data.CaptureSuccess = true;
+                            data.Body = response.Body; // Capture the HTTP response body.
+
+                            eventWaitHandleLookup[response.Url].Set(); // Signal this HTTP response has been captured.
+                        }
+                        return response;
+                    }
+                });
+            }
+
+            await networkInterceptor.StartMonitoring();
+            monitoringStarted = true;
+            webDriver.Navigate().GoToUrl(url);
+
+            // Wait for signals that all HTTP responses have been captured, unless the timeout is exceeded.
+            WaitHandle.WaitAll(eventWaitHandles, timeout);
+            return responseData;
         }
-
-        await networkInterceptor.StartMonitoring();
-        webDriver.Navigate().GoToUrl(url);
-
-        // Wait for signals that all HTTP responses have been captured, unless the timeout is exceeded.
-        WaitHandle.WaitAll(_eventWaitHandles, timeout);
-
-        await networkInterceptor.StopMonitoring();
-        webDriver.Quit();
-        return responseData;
+        finally
+        {
+            if (monitoringStarted)
+            {
+                await networkInterceptor.StopMonitoring();
+            }
+        }
     }
 
     private static IWebDriver CreateWebDriver(string? browserExecutableFullPath, string? webDriverPath)

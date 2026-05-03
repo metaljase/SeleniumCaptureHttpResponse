@@ -1,25 +1,24 @@
-﻿using Fetch = OpenQA.Selenium.DevTools.V122.Fetch;
+﻿using Fetch = OpenQA.Selenium.DevTools.V147.Fetch;
 
-namespace Metalhead.SeleniumCDT.CaptureHttpResponse
+namespace Metalhead.SeleniumCaptureHttpResponse.CDP;
+
+public class Response(Fetch.RequestPausedEventArgs requestPausedEventArgs, Fetch.GetResponseBodyCommandResponse getResponseBodyCommandResponse)
 {
-    public class Response(Fetch.RequestPausedEventArgs requestPausedEventArgs, Fetch.GetResponseBodyCommandResponse getResponseBodyCommandResponse)
+    public Fetch.RequestPausedEventArgs? RequestPausedEventArgs { get; set; } = requestPausedEventArgs;
+    public Fetch.GetResponseBodyCommandResponse? GetResponseBodyCommandResponse { get; set; } = getResponseBodyCommandResponse;
+
+    public override string ToString()
     {
-        public Fetch.RequestPausedEventArgs? RequestPausedEventArgs { get; set; } = requestPausedEventArgs;
-        public Fetch.GetResponseBodyCommandResponse? GetResponseBodyCommandResponse { get; set; } = getResponseBodyCommandResponse;
-
-        public override string ToString()
+        if (GetResponseBodyCommandResponse != null)
         {
-            if (GetResponseBodyCommandResponse != null)
+            var body = GetResponseBodyCommandResponse.Body;
+            if (GetResponseBodyCommandResponse.Base64Encoded)
             {
-                var body = GetResponseBodyCommandResponse.Body;
-                if (GetResponseBodyCommandResponse.Base64Encoded)
-                {
-                    body = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(body));
-                }
-                return body;
+                body = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(body));
             }
-
-            return string.Empty;
+            return body;
         }
+
+        return string.Empty;
     }
 }
