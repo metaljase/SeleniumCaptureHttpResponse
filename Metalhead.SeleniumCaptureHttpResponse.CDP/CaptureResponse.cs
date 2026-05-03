@@ -1,10 +1,10 @@
-﻿using OpenQA.Selenium;
+﻿using System.Collections.Concurrent;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.DevTools;
-using OpenQA.Selenium.DevTools.V122.Network;
-using System.Collections.Concurrent;
-using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V122.DevToolsSessionDomains;
-using Fetch = OpenQA.Selenium.DevTools.V122.Fetch;
+using OpenQA.Selenium.DevTools.V147.Network;
+using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V147.DevToolsSessionDomains;
+using Fetch = OpenQA.Selenium.DevTools.V147.Fetch;
 
 namespace Metalhead.SeleniumCaptureHttpResponse.CDP;
 
@@ -12,14 +12,14 @@ public class CaptureResponse(DriverOptions driverSettings)
 {
     public ConcurrentBag<ResponseData> GetResponseData(string url, List<string> captureUrls, TimeSpan timeout)
     {
-        EventWaitHandle[] _eventWaitHandles = new EventWaitHandle[captureUrls.Count];
-        Dictionary<string, EventWaitHandle> _eventWaitHandleLookup = [];
+        EventWaitHandle[] eventWaitHandles = new EventWaitHandle[captureUrls.Count];
+        Dictionary<string, EventWaitHandle> eventWaitHandleLookup = [];
         ConcurrentBag<ResponseData> responseData = [];
 
         for (int i = 0; i < captureUrls.Count; i++)
         {
-            _eventWaitHandles[i] = new AutoResetEvent(false);
-            _eventWaitHandleLookup.Add(captureUrls[i], _eventWaitHandles[i]);
+            eventWaitHandles[i] = new AutoResetEvent(false);
+            eventWaitHandleLookup.Add(captureUrls[i], eventWaitHandles[i]);
             responseData.Add(new ResponseData(captureUrls[i]));
         }
 
@@ -54,7 +54,7 @@ public class CaptureResponse(DriverOptions driverSettings)
                 RequestId = e.RequestId
             });
 
-            SeleniumCDT.CaptureHttpResponse.Response? response = new(e, getResponseBodyCommandResponse);
+            Response? response = new(e, getResponseBodyCommandResponse);
             if (response?.RequestPausedEventArgs?.ResponseStatusCode == 200)
             {
                 var data = responseData.First(r => r.Url.Equals(e.Request.Url, StringComparison.OrdinalIgnoreCase));
@@ -68,7 +68,7 @@ public class CaptureResponse(DriverOptions driverSettings)
                 RequestId = e.RequestId
             });
 
-            _eventWaitHandleLookup[e.Request.Url].Set(); // Signal this HTTP response has been captured.
+            eventWaitHandleLookup[e.Request.Url].Set(); // Signal this HTTP response has been captured.
         }
 
         fetchAdaptor.RequestPaused += ResponseInterceptedAsync;
@@ -76,7 +76,7 @@ public class CaptureResponse(DriverOptions driverSettings)
         webDriver.Url = url;
 
         // Wait for signals that all HTTP responses have been captured, unless the timeout is exceeded.
-        WaitHandle.WaitAll(_eventWaitHandles, timeout);
+        WaitHandle.WaitAll(eventWaitHandles, timeout);
 
         fetchAdaptor.RequestPaused -= ResponseInterceptedAsync;
         devToolsSession.Dispose();
