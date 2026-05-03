@@ -9,13 +9,12 @@ public class Response(Fetch.RequestPausedEventArgs requestPausedEventArgs, Fetch
 
     public override string ToString()
     {
-        if (GetResponseBodyCommandResponse != null)
+        if (GetResponseBodyCommandResponse is not null)
         {
             var body = GetResponseBodyCommandResponse.Body;
             if (GetResponseBodyCommandResponse.Base64Encoded)
-            {
                 body = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(body));
-            }
+
             return body;
         }
 

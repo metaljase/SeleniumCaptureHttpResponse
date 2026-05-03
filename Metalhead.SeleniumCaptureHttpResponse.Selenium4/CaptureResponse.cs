@@ -1,10 +1,11 @@
 ﻿using System.Collections.Concurrent;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+
+using Metalhead.SeleniumCaptureHttpResponse.Core;
 
 namespace Metalhead.SeleniumCaptureHttpResponse.Selenium4;
 
-public class CaptureResponse(DriverOptions driverSettings)
+public class CaptureResponse(Core.DriverOptions driverOptions)
 {
     public async Task<ConcurrentBag<ResponseData>> GetResponseData(string url, List<string> captureUrls, TimeSpan timeout)
     {
@@ -19,7 +20,7 @@ public class CaptureResponse(DriverOptions driverSettings)
             responseData.Add(new ResponseData(captureUrls[i]));
         }
 
-        using var webDriver = CreateWebDriver(driverSettings.BrowserExecutableFullPath, driverSettings.WebDriverPath);
+        using var webDriver = WebDriverHelper.CreateWebDriver(driverOptions.BrowserExecutableFullPath, driverOptions.WebDriverPath);
         INetwork networkInterceptor = webDriver.Manage().Network;
         bool monitoringStarted = false;
 
@@ -56,23 +57,7 @@ public class CaptureResponse(DriverOptions driverSettings)
         finally
         {
             if (monitoringStarted)
-            {
                 await networkInterceptor.StopMonitoring();
-            }
         }
-    }
-
-    private static IWebDriver CreateWebDriver(string? browserExecutableFullPath, string? webDriverPath)
-    {
-        webDriverPath = string.IsNullOrWhiteSpace(webDriverPath) ? null : webDriverPath;
-        browserExecutableFullPath = string.IsNullOrWhiteSpace(browserExecutableFullPath) ? null : browserExecutableFullPath;
-
-        var service = ChromeDriverService.CreateDefaultService(webDriverPath);
-        service.EnableVerboseLogging = false;
-
-        var options = new ChromeOptions { BinaryLocation = browserExecutableFullPath };
-        options.AddArgument("incognito");
-
-        return new ChromeDriver(service, options);
     }
 }

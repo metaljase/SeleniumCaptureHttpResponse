@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="appsettings.Development.json">
-      <DependentUpon>appsettings.json</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -27,6 +23,10 @@
 
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Metalhead.SeleniumCaptureHttpResponse.Core\Metalhead.SeleniumCaptureHttpResponse.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace Metalhead.SeleniumCaptureHttpResponse.Selenium4;
+﻿namespace Metalhead.SeleniumCaptureHttpResponse.Core;
 
 public class ResponseData(string url)
 {
