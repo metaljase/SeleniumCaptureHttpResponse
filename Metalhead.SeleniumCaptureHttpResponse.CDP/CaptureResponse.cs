@@ -1,14 +1,14 @@
 ﻿using System.Collections.Concurrent;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.DevTools.V147.Network;
 using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V147.DevToolsSessionDomains;
 using Fetch = OpenQA.Selenium.DevTools.V147.Fetch;
 
+using Metalhead.SeleniumCaptureHttpResponse.Core;
+
 namespace Metalhead.SeleniumCaptureHttpResponse.CDP;
 
-public class CaptureResponse(DriverOptions driverSettings)
+public class CaptureResponse(DriverOptions driverOptions)
 {
     public ConcurrentBag<ResponseData> GetResponseData(string url, List<string> captureUrls, TimeSpan timeout)
     {
@@ -23,7 +23,7 @@ public class CaptureResponse(DriverOptions driverSettings)
             responseData.Add(new ResponseData(captureUrls[i]));
         }
 
-        using var webDriver = CreateWebDriver(driverSettings.BrowserExecutableFullPath, driverSettings.WebDriverPath);
+        using var webDriver = WebDriverHelper.CreateWebDriver(driverOptions.BrowserExecutableFullPath, driverOptions.WebDriverPath);
         var devTools = webDriver as IDevTools;
         IDevToolsSession devToolsSession = devTools.GetDevToolsSession();
 
@@ -43,7 +43,7 @@ public class CaptureResponse(DriverOptions driverSettings)
                 ResourceType = ResourceType.XHR
             });
         }
-        enableCommandSettings.Patterns = [.. requestPatterns];        
+        enableCommandSettings.Patterns = [.. requestPatterns];
         fetchAdaptor.Enable(enableCommandSettings); // Enables issuing of RequestPaused events.
 
         async void ResponseInterceptedAsync(object? sender, Fetch.RequestPausedEventArgs e)
@@ -83,19 +83,5 @@ public class CaptureResponse(DriverOptions driverSettings)
         webDriver.Quit();
 
         return responseData;
-    }
-
-    private static IWebDriver CreateWebDriver(string? browserExecutableFullPath, string? webDriverPath)
-    {
-        webDriverPath = string.IsNullOrWhiteSpace(webDriverPath) ? null : webDriverPath;
-        browserExecutableFullPath = string.IsNullOrWhiteSpace(browserExecutableFullPath) ? null : browserExecutableFullPath;
-
-        var service = ChromeDriverService.CreateDefaultService(webDriverPath);
-        service.EnableVerboseLogging = false;
-
-        var options = new ChromeOptions { BinaryLocation = browserExecutableFullPath };
-        options.AddArgument("incognito");
-
-        return new ChromeDriver(service, options);
     }
 }

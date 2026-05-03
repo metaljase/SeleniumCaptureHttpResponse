@@ -1,8 +1,8 @@
-﻿namespace Metalhead.SeleniumCaptureHttpResponse.Selenium4;
+﻿namespace Metalhead.SeleniumCaptureHttpResponse.Core;
 
 public class DriverOptions
 {
-    public const string DriverSettings = "SeleniumCaptureHttpResponse";
+    public const string SectionName = "DriverOptions";
 
     public string? WebDriverPath { get; set; }
     public string? BrowserExecutableFullPath { get; set; }
